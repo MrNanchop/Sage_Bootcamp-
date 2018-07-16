@@ -26,7 +26,25 @@ namespace PSDev.OfficeLine.Academy.DataAccess
         /// <exception cref="RecordNotFoundException">wird geworfen, wenn Datensatz nicht in Datenbank vorhanden.</exception>
         public static object GetSeminarbuchung(Mandant mandant, int buchungID)
         {
-            throw new NotImplementedException("GetSeminarbuchung");
+            var qry = "SELECT * FROM PSDSeminarbuchungen WHERE Mandant=@mandant AND BuchungID=@buchungid";
+            var command = mandant.MainDevice.GenericConnection.CreateSqlStringCommand(qry);
+            command.AppendInParameter("mandant", typeof(short), mandant.Id);
+            command.AppendInParameter("buchungid", typeof(int), buchungID);
+
+            using (var reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    // TODO: hier am Dienstag weiter
+                    throw new NotImplementedException("GetSeminarbuchung");
+                }
+                else
+                {
+                    throw new RecordNotFoundException("Seminarbuchung", buchungID.ToString());
+                }
+               
+            }
+
         }
 
         /// <summary>
@@ -164,14 +182,30 @@ namespace PSDev.OfficeLine.Academy.DataAccess
             throw new NotImplementedException("UpdateAnsprechpartner");
         }
 
+        /// <summary>
+        /// Prüft, ob ein Ansprechpartner mit Email und Adressnummer vorhanden ist
+        /// </summary>
+        /// <param name="mandant">Mandant</param>
+        /// <param name="adresse">Adresse des Ansprechpartners</param>
+        /// <param name="email">Email des Ansprechpartners</param>
+        /// <returns></returns>
         public static bool AnsprechpartnerExists(Mandant mandant, int adresse, string email)
         {
-            throw new NotImplementedException("AnsprechpartnerExists");
+            return mandant.MainDevice.Lookup.RowExists("Nummer", "KHKAnsprechpartner", $"Mandant={mandant.Id} AND Adresse={adresse} AND EMail={SqlStrings.ToSqlString(email)}");
         }
 
+        /// <summary>
+        /// Prüft, ob ein Kontokorrent vorhanden ist
+        /// </summary>
+        /// <param name="mandant">Mandant</param>
+        /// <param name="kto">zu prüfendes Konto</param>
+        /// <param name="istDebitor">Angabe, ob Debitor oder Kreditor</param>
+        /// <returns>true - Konto vorhanden, false - Konto nicht vorhanden</returns>
         public static bool KontokorrentExists(Mandant mandant, string kto, bool istDebitor)
         {
-            throw new NotImplementedException("KontokorrentExists");
+            var ktoArt = istDebitor ? "D" : "K";
+            return mandant.MainDevice.Lookup.RowExists("Kto", "KHKKontokorrent",
+                $"Mandant={mandant.Id} AND Kto={SqlStrings.ToSqlString(kto)} AND KtoArt={SqlStrings.ToSqlString(ktoArt)}");
         }
     }
 

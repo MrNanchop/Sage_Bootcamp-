@@ -21,7 +21,7 @@ namespace PSDev.OfficeLine.Academy.DataAccess
             {
                 lock (LockObject)
                 {
-                    return _logger ?? (_logger = LogManager.GetLogger("PSDev", "OfficeLine.Academy.DataAccess"));
+                    return _logger ?? (_logger = LogManager.GetLogger("PSDev", "OfficeLine.Academy"));
                 }
             }
         }
