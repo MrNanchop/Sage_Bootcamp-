@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1641952D-FD14-48EC-B7FD-05692CF80922}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PSDev.OfficeLine.Academy.Tests</RootNamespace>
+    <AssemblyName>PSDev.OfficeLine.Academy.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Access|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Sagede.OfficeLine.Data">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Data.Devices.Main">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Data.Devices.Main.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Data.Entities.Main">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Data.Entities.Main.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Engine">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Security">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Shared">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.Shared.Core, Version=5.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Sagede.Shared.Core\v4.0_5.0.0.0__4ad8971889b881a9\Sagede.Shared.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="DataAccessLayerTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PSDev.OfficeLine.Academy.BusinessLogic\PSDev.OfficeLine.Academy.BusinessLogic.csproj">
+      <Project>{99a0f2f1-2f25-4215-bf2f-a3ae118d5871}</Project>
+      <Name>PSDev.OfficeLine.Academy.BusinessLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PSDev.OfficeLine.Academy.DataAccess\PSDev.OfficeLine.Academy.DataAccess.csproj">
+      <Project>{9694f8b9-c700-4caa-8435-7a6b82ddd3e0}</Project>
+      <Name>PSDev.OfficeLine.Academy.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PSDev.OfficeLine.Academy.DCM\PSDev.OfficeLine.Academy.DCM.csproj">
+      <Project>{40E4CE5F-7EDC-4FC5-84A6-8A0A0BDA2704}</Project>
+      <Name>PSDev.OfficeLine.Academy.DCM</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

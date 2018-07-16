@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{99A0F2F1-2F25-4215-BF2F-A3AE118D5871}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PSDev.OfficeLine.Academy.BusinessLogic</RootNamespace>
+    <AssemblyName>PSDev.OfficeLine.Academy.BusinessLogic</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Access|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Sagede.OfficeLine.Data">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Data.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Data.Devices.Main">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Data.Devices.Main.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Data.Entities.Main">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Data.Entities.Main.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Engine">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Security">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Security.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Shared">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Shared.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Wawi.BelegEngine, Version=7.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Wawi.BelegEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Wawi.Tools, Version=7.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.0\Shared\Sagede.OfficeLine.Wawi.Tools.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sagede.Shared.Core, Version=5.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Sagede.Shared.Core\v4.0_5.0.0.0__4ad8971889b881a9\Sagede.Shared.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Exceptions\BuchungValidationException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PSDev.OfficeLine.Academy.DataAccess\PSDev.OfficeLine.Academy.DataAccess.csproj">
+      <Project>{9694f8b9-c700-4caa-8435-7a6b82ddd3e0}</Project>
+      <Name>PSDev.OfficeLine.Academy.DataAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Manager\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

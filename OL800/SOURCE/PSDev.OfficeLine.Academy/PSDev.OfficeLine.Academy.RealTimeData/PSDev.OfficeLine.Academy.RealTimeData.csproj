@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D8A7D3B1-836F-4468-9E9F-B25EBDFE4F0C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PSDev.OfficeLine.Academy.RealTimeData</RootNamespace>
+    <AssemblyName>PSDev.OfficeLine.Academy.RealTimeData</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Access|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.ControlCenter.Shared, Version=7.1.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.OfficeLine.ControlCenter.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Data">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.OfficeLine.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Data.Devices.Main">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.OfficeLine.Data.Devices.Main.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Data.Entities.Main">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.OfficeLine.Data.Entities.Main.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Engine">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.OfficeLine.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Security">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.OfficeLine.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Shared">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.OfficeLine.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Shared.RealTimeData">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.OfficeLine.Shared.RealTimeData.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.Shared.Core, Version=6.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Sagede.Shared.Core\v4.0_6.0.0.0__4ad8971889b881a9\Sagede.Shared.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.Shared.RealTimeData.Common">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.Shared.RealTimeData.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.Shared.RealTimeData.Core">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Office Line\7.1\Shared\Sagede.Shared.RealTimeData.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PSDev.OfficeLine.Academy.BusinessLogic\PSDev.OfficeLine.Academy.BusinessLogic.csproj">
+      <Project>{99a0f2f1-2f25-4215-bf2f-a3ae118d5871}</Project>
+      <Name>PSDev.OfficeLine.Academy.BusinessLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PSDev.OfficeLine.Academy.DataAccess\PSDev.OfficeLine.Academy.DataAccess.csproj">
+      <Project>{9694f8b9-c700-4caa-8435-7a6b82ddd3e0}</Project>
+      <Name>PSDev.OfficeLine.Academy.DataAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataServices\" />
+    <Folder Include="Macros\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

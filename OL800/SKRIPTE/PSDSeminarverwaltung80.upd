@@ -1,0 +1,1085 @@
+/****** Object:  Table [dbo].[PSDSeminarbuchungen]    Script Date: 03.07.2018 14:31:02 ******/
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PSDSeminarbuchungen]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[PSDSeminarbuchungen](
+	[BuchungID] [int] NOT NULL,
+	[Mandant] [smallint] NOT NULL,
+	[SeminarterminID] [varchar](20) NOT NULL,
+	[BelID] [int] NOT NULL,
+	[BelPosID] [int] NOT NULL,
+	[VorPosID] [int] NOT NULL,
+	[Adresse] [int] NOT NULL,
+	[Konto] [varchar](20) NOT NULL,
+	[KontoMatchcode] [varchar](50) NOT NULL,
+	[Ansprechpartnernummer] [int] NOT NULL,
+	[AnsprechpartnerVorname] [varchar](50) NULL,
+	[AnsprechpartnerNachname] [varchar](50) NULL,
+	[AnsprechpartnerEmail] [varchar](50) NULL,
+	[EmailBestaetigungGesendet] [dbo].[KHKBoolean] NOT NULL,
+	[Timestamp] [timestamp] NOT NULL,
+ CONSTRAINT [PK_PSDSeminarbuchungen] PRIMARY KEY CLUSTERED 
+(
+	[BuchungID] ASC,
+	[Mandant] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PSDSeminartermine]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[PSDSeminartermine](
+	[SeminarterminID] [varchar](20) NOT NULL,
+	[Mandant] [smallint] NOT NULL,
+	[Matchcode] [varchar](50) NOT NULL,
+	[Artikelnummer] [varchar](31) NULL,
+	[TrainerIDEins] [varchar](20) NULL,
+	[TrainerIDZwei] [varchar](20) NULL,
+	[Startdatum] [datetime] NULL,
+	[Endedatum] [datetime] NULL,
+	[Startzeit] [varchar](5) NULL,
+	[Endezeit] [varchar](5) NULL,
+	[AnzahlTeilnehmer] [smallint] NULL,
+	[AnzahlTeilnehmerMax] [smallint] NULL,
+	[AnzahlTeilnehmerMin] [smallint] NULL,
+	[Stornofrist] [smallint] NULL,
+	[Adresse] [int] NULL,
+	[PLZ] [varchar](10) NULL,
+	[Ort] [varchar](40) NULL,
+	[Absagetermin] [datetime] NULL,
+	[Abgesagt] [dbo].[KHKBoolean] NULL,
+	[Absagegrund] [varchar](10) NULL,
+	[Status] [varchar](10) NULL,
+	[Memo] [text] NULL,
+	[Aktiv] [dbo].[KHKBoolean] NOT NULL,
+	[Timestamp] [timestamp] NOT NULL,
+ CONSTRAINT [PK_PSDSeminartermine] PRIMARY KEY CLUSTERED 
+(
+	[SeminarterminID] ASC,
+	[Mandant] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tPSDPrintTeilnehmer]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[tPSDPrintTeilnehmer](
+	[ConnID] [int] NOT NULL,
+	[ID] [smallint] NOT NULL,
+	[InfodruckId] [int] NOT NULL,
+	[InfodruckDatum] [datetime] NOT NULL,
+	[LfdNr] [int] IDENTITY(1,1) NOT NULL,
+	[BelPosID] [int] NULL,
+	[VorPosID] [int] NULL,
+	[SeminarterminId] [varchar](20) NULL,
+	[Adresse] [int] NULL,
+	[Vorname] [varchar](50) NULL,
+	[Nachname] [varchar](50) NULL,
+	[Email] [varchar](50) NULL,
+	[Timestamp] [timestamp] NOT NULL,
+ CONSTRAINT [PK_tPSDPrintTeilnehmer] PRIMARY KEY CLUSTERED 
+(
+	[ConnID] ASC,
+	[ID] ASC,
+	[InfodruckId] ASC,
+	[InfodruckDatum] ASC,
+	[LfdNr] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_PSDSeminarbuchungen_PSDSeminartermine]') AND parent_object_id = OBJECT_ID(N'[dbo].[PSDSeminarbuchungen]'))
+ALTER TABLE [dbo].[PSDSeminarbuchungen]  WITH CHECK ADD  CONSTRAINT [FK_PSDSeminarbuchungen_PSDSeminartermine] FOREIGN KEY([SeminarterminID], [Mandant])
+REFERENCES [dbo].[PSDSeminartermine] ([SeminarterminID], [Mandant])
+GO
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_PSDSeminarbuchungen_PSDSeminartermine]') AND parent_object_id = OBJECT_ID(N'[dbo].[PSDSeminarbuchungen]'))
+ALTER TABLE [dbo].[PSDSeminarbuchungen] CHECK CONSTRAINT [FK_PSDSeminarbuchungen_PSDSeminartermine]
+GO
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_PSDSeminartermine_KHKAdressen]') AND parent_object_id = OBJECT_ID(N'[dbo].[PSDSeminartermine]'))
+ALTER TABLE [dbo].[PSDSeminartermine]  WITH CHECK ADD  CONSTRAINT [FK_PSDSeminartermine_KHKAdressen] FOREIGN KEY([Adresse], [Mandant])
+REFERENCES [dbo].[KHKAdressen] ([Adresse], [Mandant])
+GO
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_PSDSeminartermine_KHKAdressen]') AND parent_object_id = OBJECT_ID(N'[dbo].[PSDSeminartermine]'))
+ALTER TABLE [dbo].[PSDSeminartermine] CHECK CONSTRAINT [FK_PSDSeminartermine_KHKAdressen]
+GO
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_PSDSeminartermine_KHKArtikel]') AND parent_object_id = OBJECT_ID(N'[dbo].[PSDSeminartermine]'))
+ALTER TABLE [dbo].[PSDSeminartermine]  WITH CHECK ADD  CONSTRAINT [FK_PSDSeminartermine_KHKArtikel] FOREIGN KEY([Artikelnummer], [Mandant])
+REFERENCES [dbo].[KHKArtikel] ([Artikelnummer], [Mandant])
+GO
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_PSDSeminartermine_KHKArtikel]') AND parent_object_id = OBJECT_ID(N'[dbo].[PSDSeminartermine]'))
+ALTER TABLE [dbo].[PSDSeminartermine] CHECK CONSTRAINT [FK_PSDSeminartermine_KHKArtikel]
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminarbuchungen', N'COLUMN',N'Adresse'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Adressnummer aus A0AdressNr aus KHKVKBelege.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminarbuchungen', @level2type=N'COLUMN',@level2name=N'Adresse'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminarbuchungen', N'COLUMN',N'AnsprechpartnerVorname'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Redundante Datenspeicherung zur Erleichterung der Datenbankemail.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminarbuchungen', @level2type=N'COLUMN',@level2name=N'AnsprechpartnerVorname'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminarbuchungen', N'COLUMN',N'AnsprechpartnerNachname'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Redundante Datenspeicherung zur Erleichterung der Datenbankemail.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminarbuchungen', @level2type=N'COLUMN',@level2name=N'AnsprechpartnerNachname'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminarbuchungen', N'COLUMN',N'AnsprechpartnerEmail'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Redundante Datenspeicherung zur Erleichterung der Datenbankemail.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminarbuchungen', @level2type=N'COLUMN',@level2name=N'AnsprechpartnerEmail'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminarbuchungen', N'COLUMN',N'EmailBestaetigungGesendet'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Wurde eine Emailbestätigung gesendet?' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminarbuchungen', @level2type=N'COLUMN',@level2name=N'EmailBestaetigungGesendet'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminartermine', N'COLUMN',N'Matchcode'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Enthält den Matchcode der Beschwerde.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminartermine', @level2type=N'COLUMN',@level2name=N'Matchcode'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminartermine', N'COLUMN',N'Artikelnummer'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Enthält die Artikelnummer aus KHKArtikel.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminartermine', @level2type=N'COLUMN',@level2name=N'Artikelnummer'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminartermine', N'COLUMN',N'TrainerIDEins'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Erster möglicher Trainer aus KHKMitarbeiter.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminartermine', @level2type=N'COLUMN',@level2name=N'TrainerIDEins'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminartermine', N'COLUMN',N'TrainerIDZwei'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Zweiter möglicher Trainer aus KHKMitarbeiter.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminartermine', @level2type=N'COLUMN',@level2name=N'TrainerIDZwei'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminartermine', N'COLUMN',N'Adresse'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Enthält die Adressnummer des Schulungsstandorts.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminartermine', @level2type=N'COLUMN',@level2name=N'Adresse'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminartermine', N'COLUMN',N'Absagetermin'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Wird berechnet aus dem Absagetagen aus dem Adressstamm und dem Startdatum.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminartermine', @level2type=N'COLUMN',@level2name=N'Absagetermin'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminartermine', N'COLUMN',N'Absagegrund'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Enthält den Absagegrund aus den benutzerdefinierten Gruppenkennzeichen.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminartermine', @level2type=N'COLUMN',@level2name=N'Absagegrund'
+GO
+IF NOT EXISTS (SELECT * FROM ::fn_listextendedproperty(N'MS_Description' , N'SCHEMA',N'dbo', N'TABLE',N'PSDSeminartermine', N'COLUMN',N'Status'))
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Enthält den Status des Seminars aus den benutzerdefinierten Gruppenkennzeichen.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'PSDSeminartermine', @level2type=N'COLUMN',@level2name=N'Status'
+GO
+
+
+-- Feld USER_Absagetage aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKAdressen')
+ AND (syscolumns.name = N'USER_Absagetage')) 
+ BEGIN 
+ ALTER TABLE "KHKAdressen" ALTER COLUMN "USER_Absagetage" Smallint NULL 
+ END 
+GO 
+
+-- Feld USER_Absagetage einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKAdressen')
+ AND (syscolumns.name = N'USER_Absagetage')) 
+ BEGIN 
+ ALTER TABLE "KHKAdressen" ADD "USER_Absagetage" Smallint NULL  DEFAULT 0
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_Absagetage der Klasse Adresse aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Adresse' AND Field = 'USER_Absagetage')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, Description='Absagetage', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 2, LayoutWidthField= 10, LayoutWidthLabel= 12, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 0, Type= 3, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='Adresse' AND Field='USER_Absagetage'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_Absagetage der Klasse Adresse einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Adresse' AND Field = 'USER_Absagetage')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('Adresse',  0,  0, 'Absagetage', 'USER_Absagetage',  2,  0,  1,  2,  10,  12,  0, -1,  0,  0,  3,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_Schulungsstandort aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKAdressen')
+ AND (syscolumns.name = N'USER_Schulungsstandort')) 
+ BEGIN 
+ ALTER TABLE "KHKAdressen" ALTER COLUMN "USER_Schulungsstandort" KHKBoolean NULL 
+ END 
+GO 
+
+-- Feld USER_Schulungsstandort einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKAdressen')
+ AND (syscolumns.name = N'USER_Schulungsstandort')) 
+ BEGIN 
+ ALTER TABLE "KHKAdressen" ADD "USER_Schulungsstandort" KHKBoolean NULL  DEFAULT 0
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_Schulungsstandort der Klasse Adresse aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Adresse' AND Field = 'USER_Schulungsstandort')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, DefaultValue='0', Description='Schulungsstandort', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 0, LayoutWidthField= 10, LayoutWidthLabel= 12, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 0, Type= 1, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='Adresse' AND Field='USER_Schulungsstandort'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_Schulungsstandort der Klasse Adresse einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Adresse' AND Field = 'USER_Schulungsstandort')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, DefaultValue, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('Adresse',  0,  0, '0', 'Schulungsstandort', 'USER_Schulungsstandort',  2,  0,  1,  0,  10,  12,  0, -1,  0,  0,  1,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_Passwort aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKAnsprechpartner')
+ AND (syscolumns.name = N'USER_Passwort')) 
+ BEGIN 
+ ALTER TABLE "KHKAnsprechpartner" ALTER COLUMN "USER_Passwort" Varchar(20) NULL 
+ END 
+GO 
+
+-- Feld USER_Passwort einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKAnsprechpartner')
+ AND (syscolumns.name = N'USER_Passwort')) 
+ BEGIN 
+ ALTER TABLE "KHKAnsprechpartner" ADD "USER_Passwort" Varchar(20) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_Passwort der Klasse Ansprechpartner aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Ansprechpartner' AND Field = 'USER_Passwort')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, Description='Passwort', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 0, LayoutWidthField= 42, LayoutWidthLabel= 10, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 20, Type= 10, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='Ansprechpartner' AND Field='USER_Passwort'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_Passwort der Klasse Ansprechpartner einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Ansprechpartner' AND Field = 'USER_Passwort')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('Ansprechpartner',  0,  0, 'Passwort', 'USER_Passwort',  2,  0,  1,  0,  42,  10,  0, -1,  0,  20,  10,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_AnzahlTage aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArtikel')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKArtikel" ALTER COLUMN "USER_AnzahlTage" Smallint NULL 
+ END 
+GO 
+
+-- Feld USER_AnzahlTage einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArtikel')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKArtikel" ADD "USER_AnzahlTage" Smallint NULL  DEFAULT 0
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_AnzahlTage der Klasse Artikel aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Artikel' AND Field = 'USER_AnzahlTage')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, Description='Dauer in Tagen', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 2, LayoutWidthField= 11, LayoutWidthLabel= 11, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 0, Type= 3, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='Artikel' AND Field='USER_AnzahlTage'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_AnzahlTage der Klasse Artikel einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Artikel' AND Field = 'USER_AnzahlTage')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('Artikel',  0,  0, 'Dauer in Tagen', 'USER_AnzahlTage',  2,  0,  1,  2,  11,  11,  0, -1,  0,  0,  3,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_Seminar aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArtikel')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKArtikel" ALTER COLUMN "USER_Seminar" KHKBoolean NULL 
+ END 
+GO 
+
+-- Feld USER_Seminar einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArtikel')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKArtikel" ADD "USER_Seminar" KHKBoolean NULL  DEFAULT 0
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_Seminar der Klasse Artikel aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Artikel' AND Field = 'USER_Seminar')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, DefaultValue='0', Description='Seminar', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 0, LayoutWidthField= 11, LayoutWidthLabel= 11, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 0, Type= 1, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='Artikel' AND Field='USER_Seminar'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_Seminar der Klasse Artikel einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Artikel' AND Field = 'USER_Seminar')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, DefaultValue, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('Artikel',  0,  0, '0', 'Seminar', 'USER_Seminar',  2,  0,  1,  0,  11,  11,  0, -1,  0,  0,  1,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_UhrzeitBis aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArtikel')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKArtikel" ALTER COLUMN "USER_UhrzeitBis" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArtikel')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKArtikel" ADD "USER_UhrzeitBis" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_UhrzeitBis der Klasse Artikel aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Artikel' AND Field = 'USER_UhrzeitBis')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, Description='Uhrzeit bis', LayoutHeightField= 2, LayoutLeft= 22, LayoutTab= 1, LayoutTop= 4, LayoutWidthField= 11, LayoutWidthLabel= 11, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 5, Type= 10, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='Artikel' AND Field='USER_UhrzeitBis'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_UhrzeitBis der Klasse Artikel einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Artikel' AND Field = 'USER_UhrzeitBis')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('Artikel',  0,  0, 'Uhrzeit bis', 'USER_UhrzeitBis',  2,  22,  1,  4,  11,  11,  0, -1,  0,  5,  10,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_UhrzeitVon aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArtikel')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKArtikel" ALTER COLUMN "USER_UhrzeitVon" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArtikel')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKArtikel" ADD "USER_UhrzeitVon" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_UhrzeitVon der Klasse Artikel aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Artikel' AND Field = 'USER_UhrzeitVon')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, Description='Uhrzeit von', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 4, LayoutWidthField= 11, LayoutWidthLabel= 11, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 5, Type= 10, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='Artikel' AND Field='USER_UhrzeitVon'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_UhrzeitVon der Klasse Artikel einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Artikel' AND Field = 'USER_UhrzeitVon')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('Artikel',  0,  0, 'Uhrzeit von', 'USER_UhrzeitVon',  2,  0,  1,  4,  11,  11,  0, -1,  0,  5,  10,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_Trainer aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKMitarbeiter')
+ AND (syscolumns.name = N'USER_Trainer')) 
+ BEGIN 
+ ALTER TABLE "KHKMitarbeiter" ALTER COLUMN "USER_Trainer" KHKBoolean NULL 
+ END 
+GO 
+
+-- Feld USER_Trainer einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKMitarbeiter')
+ AND (syscolumns.name = N'USER_Trainer')) 
+ BEGIN 
+ ALTER TABLE "KHKMitarbeiter" ADD "USER_Trainer" KHKBoolean NULL  DEFAULT 0
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_Trainer der Klasse Mitarbeiter aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Mitarbeiter' AND Field = 'USER_Trainer')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, DefaultValue='0', Description='Trainer', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 0, LayoutWidthField= 11, LayoutWidthLabel= 11, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 0, Type= 1, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='Mitarbeiter' AND Field='USER_Trainer'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_Trainer der Klasse Mitarbeiter einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'Mitarbeiter' AND Field = 'USER_Trainer')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, DefaultValue, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('Mitarbeiter',  0,  0, '0', 'Trainer', 'USER_Trainer',  2,  0,  1,  0,  11,  11,  0, -1,  0,  0,  1,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_AnzahlTage aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKVKBelegePositionen')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKVKBelegePositionen" ALTER COLUMN "USER_AnzahlTage" Smallint NULL 
+ END 
+GO 
+
+-- Feld USER_AnzahlTage einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKVKBelegePositionen')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKVKBelegePositionen" ADD "USER_AnzahlTage" Smallint NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_AnzahlTage aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivVKPos')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivVKPos" ALTER COLUMN "USER_AnzahlTage" Smallint NULL 
+ END 
+GO 
+
+-- Feld USER_AnzahlTage einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivVKPos')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivVKPos" ADD "USER_AnzahlTage" Smallint NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_AnzahlTage aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKPJBelegePositionen')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKPJBelegePositionen" ALTER COLUMN "USER_AnzahlTage" Smallint NULL 
+ END 
+GO 
+
+-- Feld USER_AnzahlTage einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKPJBelegePositionen')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKPJBelegePositionen" ADD "USER_AnzahlTage" Smallint NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_AnzahlTage aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivPJPos')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivPJPos" ALTER COLUMN "USER_AnzahlTage" Smallint NULL 
+ END 
+GO 
+
+-- Feld USER_AnzahlTage einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivPJPos')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivPJPos" ADD "USER_AnzahlTage" Smallint NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_AnzahlTage aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionArtikelVK')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionArtikelVK" ALTER COLUMN "USER_AnzahlTage" Smallint NULL 
+ END 
+GO 
+
+-- Feld USER_AnzahlTage einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionArtikelVK')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionArtikelVK" ADD "USER_AnzahlTage" Smallint NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_AnzahlTage aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionAnzahlung')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionAnzahlung" ALTER COLUMN "USER_AnzahlTage" Smallint NULL 
+ END 
+GO 
+
+-- Feld USER_AnzahlTage einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionAnzahlung')
+ AND (syscolumns.name = N'USER_AnzahlTage')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionAnzahlung" ADD "USER_AnzahlTage" Smallint NULL  DEFAULT 0
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_AnzahlTage der Klasse VKBelegPosition aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'VKBelegPosition' AND Field = 'USER_AnzahlTage')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, Description='Dauer in Tagen', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 2, LayoutWidthField= 11, LayoutWidthLabel= 11, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 0, Type= 3, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='VKBelegPosition' AND Field='USER_AnzahlTage'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_AnzahlTage der Klasse VKBelegPosition einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'VKBelegPosition' AND Field = 'USER_AnzahlTage')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('VKBelegPosition',  0,  0, 'Dauer in Tagen', 'USER_AnzahlTage',  2,  0,  1,  2,  11,  11,  0, -1,  0,  0,  3,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_Seminar aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKVKBelegePositionen')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKVKBelegePositionen" ALTER COLUMN "USER_Seminar" KHKBoolean NULL 
+ END 
+GO 
+
+-- Feld USER_Seminar einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKVKBelegePositionen')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKVKBelegePositionen" ADD "USER_Seminar" KHKBoolean NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_Seminar aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivVKPos')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivVKPos" ALTER COLUMN "USER_Seminar" KHKBoolean NULL 
+ END 
+GO 
+
+-- Feld USER_Seminar einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivVKPos')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivVKPos" ADD "USER_Seminar" KHKBoolean NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_Seminar aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKPJBelegePositionen')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKPJBelegePositionen" ALTER COLUMN "USER_Seminar" KHKBoolean NULL 
+ END 
+GO 
+
+-- Feld USER_Seminar einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKPJBelegePositionen')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKPJBelegePositionen" ADD "USER_Seminar" KHKBoolean NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_Seminar aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivPJPos')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivPJPos" ALTER COLUMN "USER_Seminar" KHKBoolean NULL 
+ END 
+GO 
+
+-- Feld USER_Seminar einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivPJPos')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivPJPos" ADD "USER_Seminar" KHKBoolean NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_Seminar aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionArtikelVK')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionArtikelVK" ALTER COLUMN "USER_Seminar" KHKBoolean NULL 
+ END 
+GO 
+
+-- Feld USER_Seminar einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionArtikelVK')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionArtikelVK" ADD "USER_Seminar" KHKBoolean NULL  DEFAULT 0
+ END 
+GO 
+
+-- Feld USER_Seminar aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionAnzahlung')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionAnzahlung" ALTER COLUMN "USER_Seminar" KHKBoolean NULL 
+ END 
+GO 
+
+-- Feld USER_Seminar einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionAnzahlung')
+ AND (syscolumns.name = N'USER_Seminar')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionAnzahlung" ADD "USER_Seminar" KHKBoolean NULL  DEFAULT 0
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_Seminar der Klasse VKBelegPosition aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'VKBelegPosition' AND Field = 'USER_Seminar')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, DefaultValue='0', Description='Seminar', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 0, LayoutWidthField= 11, LayoutWidthLabel= 11, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 0, Type= 1, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='VKBelegPosition' AND Field='USER_Seminar'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_Seminar der Klasse VKBelegPosition einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'VKBelegPosition' AND Field = 'USER_Seminar')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, DefaultValue, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('VKBelegPosition',  0,  0, '0', 'Seminar', 'USER_Seminar',  2,  0,  1,  0,  11,  11,  0, -1,  0,  0,  1,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_UhrzeitBis aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKVKBelegePositionen')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKVKBelegePositionen" ALTER COLUMN "USER_UhrzeitBis" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKVKBelegePositionen')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKVKBelegePositionen" ADD "USER_UhrzeitBis" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivVKPos')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivVKPos" ALTER COLUMN "USER_UhrzeitBis" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivVKPos')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivVKPos" ADD "USER_UhrzeitBis" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKPJBelegePositionen')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKPJBelegePositionen" ALTER COLUMN "USER_UhrzeitBis" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKPJBelegePositionen')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKPJBelegePositionen" ADD "USER_UhrzeitBis" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivPJPos')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivPJPos" ALTER COLUMN "USER_UhrzeitBis" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivPJPos')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivPJPos" ADD "USER_UhrzeitBis" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionArtikelVK')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionArtikelVK" ALTER COLUMN "USER_UhrzeitBis" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionArtikelVK')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionArtikelVK" ADD "USER_UhrzeitBis" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionAnzahlung')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionAnzahlung" ALTER COLUMN "USER_UhrzeitBis" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitBis einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionAnzahlung')
+ AND (syscolumns.name = N'USER_UhrzeitBis')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionAnzahlung" ADD "USER_UhrzeitBis" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_UhrzeitBis der Klasse VKBelegPosition aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'VKBelegPosition' AND Field = 'USER_UhrzeitBis')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, Description='Uhrzeit bis', LayoutHeightField= 2, LayoutLeft= 22, LayoutTab= 1, LayoutTop= 4, LayoutWidthField= 11, LayoutWidthLabel= 11, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 5, Type= 10, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='VKBelegPosition' AND Field='USER_UhrzeitBis'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_UhrzeitBis der Klasse VKBelegPosition einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'VKBelegPosition' AND Field = 'USER_UhrzeitBis')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('VKBelegPosition',  0,  0, 'Uhrzeit bis', 'USER_UhrzeitBis',  2,  22,  1,  4,  11,  11,  0, -1,  0,  5,  10,  0,  0,  0)
+END
+GO 
+
+-- Feld USER_UhrzeitVon aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKVKBelegePositionen')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKVKBelegePositionen" ALTER COLUMN "USER_UhrzeitVon" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKVKBelegePositionen')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKVKBelegePositionen" ADD "USER_UhrzeitVon" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivVKPos')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivVKPos" ALTER COLUMN "USER_UhrzeitVon" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivVKPos')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivVKPos" ADD "USER_UhrzeitVon" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKPJBelegePositionen')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKPJBelegePositionen" ALTER COLUMN "USER_UhrzeitVon" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKPJBelegePositionen')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKPJBelegePositionen" ADD "USER_UhrzeitVon" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivPJPos')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivPJPos" ALTER COLUMN "USER_UhrzeitVon" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'KHKArchivPJPos')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "KHKArchivPJPos" ADD "USER_UhrzeitVon" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionArtikelVK')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionArtikelVK" ALTER COLUMN "USER_UhrzeitVon" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionArtikelVK')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionArtikelVK" ADD "USER_UhrzeitVon" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon aktualisieren, wenn noch bereits vorhanden
+IF EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionAnzahlung')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionAnzahlung" ALTER COLUMN "USER_UhrzeitVon" Varchar(5) NULL 
+ END 
+GO 
+
+-- Feld USER_UhrzeitVon einfügen, wenn noch nicht vorhanden
+IF NOT EXISTS (SELECT sysobjects.type, sysobjects.name, syscolumns.name 
+ FROM sysobjects INNER JOIN syscolumns ON sysobjects.id = syscolumns.id 
+ WHERE (sysobjects.type = 'U') AND (sysobjects.name = N'tKHKPrintPositionAnzahlung')
+ AND (syscolumns.name = N'USER_UhrzeitVon')) 
+ BEGIN 
+ ALTER TABLE "tKHKPrintPositionAnzahlung" ADD "USER_UhrzeitVon" Varchar(5) NULL  DEFAULT ''
+ END 
+GO 
+
+-- Werte in USysClassFields für Feld USER_UhrzeitVon der Klasse VKBelegPosition aktualisieren
+IF EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'VKBelegPosition' AND Field = 'USER_UhrzeitVon')
+BEGIN
+UPDATE USysClassFields SET ComboBoxLimitToList= 0, ComboBoxMode= 0, Description='Uhrzeit von', LayoutHeightField= 2, LayoutLeft= 0, LayoutTab= 1, LayoutTop= 4, LayoutWidthField= 11, LayoutWidthLabel= 11, Locked= 0, Nullable=-1, ReadOnly= 0, Size= 5, Type= 10, WSIstAktiv= 0, WSIstGeaendert= 0, WSIstSichtbar= 0  WHERE Class='VKBelegPosition' AND Field='USER_UhrzeitVon'
+END
+GO 
+
+-- Werte in USysClassFields für Feld USER_UhrzeitVon der Klasse VKBelegPosition einfügen
+IF NOT EXISTS (SELECT Class, Field FROM USysClassFields WHERE Class = 'VKBelegPosition' AND Field = 'USER_UhrzeitVon')
+BEGIN
+INSERT INTO USysClassFields (Class, ComboBoxLimitToList, ComboBoxMode, Description, Field, LayoutHeightField, LayoutLeft, LayoutTab, LayoutTop, LayoutWidthField, LayoutWidthLabel, Locked, Nullable, ReadOnly, Size, Type, WSIstAktiv, WSIstGeaendert, WSIstSichtbar) VALUES ('VKBelegPosition',  0,  0, 'Uhrzeit von', 'USER_UhrzeitVon',  2,  0,  1,  4,  11,  11,  0, -1,  0,  5,  10,  0,  0,  0)
+END
+GO 
+
+-- Skripte zur Anlage der Register für das benutzerspezifische Layout
+
+-- Werte in USysClassFieldsTabs für Register Standorte der Klasse Adresse aktualisieren
+IF EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'Adresse' AND ID = 1)
+BEGIN
+UPDATE USysClassFieldsTabs SET Description='Standorte', Pos= 1  WHERE Class='Adresse' AND ID= 1
+END
+GO 
+
+-- Werte in USysClassFieldsTabs für Register Standorte der Klasse Adresse einfügen
+IF NOT EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'Adresse' AND ID = 1)
+BEGIN
+INSERT INTO USysClassFieldsTabs (Class, Description, ID, Pos) VALUES ('Adresse', 'Standorte',  1,  1)
+END
+GO 
+
+-- Werte in USysClassFieldsTabs für Register Zusatzdaten der Klasse Ansprechpartner aktualisieren
+IF EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'Ansprechpartner' AND ID = 1)
+BEGIN
+UPDATE USysClassFieldsTabs SET Description='Zusatzdaten', Pos= 1  WHERE Class='Ansprechpartner' AND ID= 1
+END
+GO 
+
+-- Werte in USysClassFieldsTabs für Register Zusatzdaten der Klasse Ansprechpartner einfügen
+IF NOT EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'Ansprechpartner' AND ID = 1)
+BEGIN
+INSERT INTO USysClassFieldsTabs (Class, Description, ID, Pos) VALUES ('Ansprechpartner', 'Zusatzdaten',  1,  1)
+END
+GO 
+
+-- Werte in USysClassFieldsTabs für Register Seminardaten der Klasse Artikel aktualisieren
+IF EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'Artikel' AND ID = 1)
+BEGIN
+UPDATE USysClassFieldsTabs SET Description='Seminardaten', Pos= 1  WHERE Class='Artikel' AND ID= 1
+END
+GO 
+
+-- Werte in USysClassFieldsTabs für Register Seminardaten der Klasse Artikel einfügen
+IF NOT EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'Artikel' AND ID = 1)
+BEGIN
+INSERT INTO USysClassFieldsTabs (Class, Description, ID, Pos) VALUES ('Artikel', 'Seminardaten',  1,  1)
+END
+GO 
+
+-- Werte in USysClassFieldsTabs für Register Zusatzdaten der Klasse Mitarbeiter aktualisieren
+IF EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'Mitarbeiter' AND ID = 1)
+BEGIN
+UPDATE USysClassFieldsTabs SET Description='Zusatzdaten', Pos= 1  WHERE Class='Mitarbeiter' AND ID= 1
+END
+GO 
+
+-- Werte in USysClassFieldsTabs für Register Zusatzdaten der Klasse Mitarbeiter einfügen
+IF NOT EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'Mitarbeiter' AND ID = 1)
+BEGIN
+INSERT INTO USysClassFieldsTabs (Class, Description, ID, Pos) VALUES ('Mitarbeiter', 'Zusatzdaten',  1,  1)
+END
+GO 
+
+-- Werte in USysClassFieldsTabs für Register Seminardaten der Klasse VKBelegPosition aktualisieren
+IF EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'VKBelegPosition' AND ID = 1)
+BEGIN
+UPDATE USysClassFieldsTabs SET Description='Seminardaten', Pos= 1  WHERE Class='VKBelegPosition' AND ID= 1
+END
+GO 
+
+-- Werte in USysClassFieldsTabs für Register Seminardaten der Klasse VKBelegPosition einfügen
+IF NOT EXISTS (SELECT Class, ID FROM USysClassFieldsTabs WHERE Class = 'VKBelegPosition' AND ID = 1)
+BEGIN
+INSERT INTO USysClassFieldsTabs (Class, Description, ID, Pos) VALUES ('VKBelegPosition', 'Seminardaten',  1,  1)
+END
+GO 
+
+-- Skripte zur Anlage der benutzerdefinierten Gruppen
+
+-- Werte in USysUserdefinedGroups für Gruppe 1000500001 - Absagegründe aktualisieren 
+IF EXISTS (SELECT ID FROM USysUserdefinedGroups WHERE ID = 1000500001)
+BEGIN
+UPDATE USysUserdefinedGroups SET Property='Absagegründe', Type= 10  WHERE ID= 1000500001
+END
+GO 
+
+-- Werte in USysUserdefinedGroups für Gruppe 1000500001 - Absagegründe einfügen
+IF NOT EXISTS (SELECT ID FROM USysUserdefinedGroups WHERE ID = 1000500001)
+BEGIN
+INSERT INTO USysUserdefinedGroups (ID, Property, Type) VALUES ( 1000500001, 'Absagegründe',  10)
+END
+GO 
+
+-- Werte in USysUserdefinedGroups für Gruppe 1000500002 - Status aktualisieren 
+IF EXISTS (SELECT ID FROM USysUserdefinedGroups WHERE ID = 1000500002)
+BEGIN
+UPDATE USysUserdefinedGroups SET Property='Status', Type= 10  WHERE ID= 1000500002
+END
+GO 
+
+-- Werte in USysUserdefinedGroups für Gruppe 1000500002 - Status einfügen
+IF NOT EXISTS (SELECT ID FROM USysUserdefinedGroups WHERE ID = 1000500002)
+BEGIN
+INSERT INTO USysUserdefinedGroups (ID, Property, Type) VALUES ( 1000500002, 'Status',  10)
+END
+GO 
+
+/* Formatierung der SeminarterminID festlegen und im Administrator verfügbar machen */
+/* ACHTUNG: Hier ist die Mandantennummer explizit angegeben! */
+INSERT INTO KHKMandanten (Eigenschaft, Jahr, Mandant, Bezeichnung, Wert, Typ, Cache, Attribs) VALUES (460, 0, 123, 'Seminartermin', 'Mask:="@@@@@@@@"; Presets:="S"; Shortcuts:=""; Lwb:=""; Upb:=""; Length:="20"; Group:="0"', 8, -1, 0) 
+GO
+
+INSERT INTO USysCatalog ([Table], Revision) VALUES ('PSDSeminartermine', 1)
+GO
+
+INSERT INTO USysCatalog ([Table], Revision) VALUES ('PSDSeminarbuchungen', 1)
+GO
+
+INSERT INTO USysCatalog ([Table], Revision) VALUES ('tPSDPrintTeilnehmer', 1)
+GO
+
+
+/* Eintrag in USysSetup nach Ausführung des Updates */
+INSERT INTO USysSetup ([Tree],[Token],[Property],[Value]) VALUES ('Admin','Update','Seminarverwaltung','1')
+GO

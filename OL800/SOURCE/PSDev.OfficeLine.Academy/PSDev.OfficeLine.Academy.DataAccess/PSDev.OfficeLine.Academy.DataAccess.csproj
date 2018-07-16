@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9694F8B9-C700-4CAA-8435-7A6B82DDD3E0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PSDev.OfficeLine.Academy.DataAccess</RootNamespace>
+    <AssemblyName>PSDev.OfficeLine.Academy.DataAccess</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Access|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>C:\Program Files (x86)\Sage\Sage 100\8.0\Shared\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Sagede.OfficeLine.Data, Version=8.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Sage 100\8.0\Shared\Sagede.OfficeLine.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Data.Devices.Main, Version=8.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Sage 100\8.0\Shared\Sagede.OfficeLine.Data.Devices.Main.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Data.Entities.Main, Version=8.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Sage 100\8.0\Shared\Sagede.OfficeLine.Data.Entities.Main.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Engine, Version=8.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Sage 100\8.0\Shared\Sagede.OfficeLine.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Security, Version=8.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Sage 100\8.0\Shared\Sagede.OfficeLine.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.OfficeLine.Shared, Version=8.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Sage\Sage 100\8.0\Shared\Sagede.OfficeLine.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Sagede.Shared.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=4ad8971889b881a9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Sagede.Shared.Core\v4.0_8.0.0.0__4ad8971889b881a9\Sagede.Shared.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Exceptions\RecordNotFoundException.cs" />
+    <Compile Include="Exceptions\RecordUpdateException.cs" />
+    <Compile Include="Exceptions\RecordValidationException.cs" />
+    <Compile Include="SeminarData.cs" />
+    <Compile Include="TraceLog.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
