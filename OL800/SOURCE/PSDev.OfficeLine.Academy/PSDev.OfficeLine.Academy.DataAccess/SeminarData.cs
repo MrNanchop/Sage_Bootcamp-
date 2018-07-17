@@ -86,6 +86,7 @@ namespace PSDev.OfficeLine.Academy.DataAccess
             {
                 // Neuanlage
                 buchung.BuchungID = mandant.MainDevice.GetTan("PSDSeminarbuchungen", mandant.Id);
+                buchung.Mandant = buchung.Mandant == 0 ? mandant.Id : buchung.Mandant;
                 qry.AppendLine("INSERT INTO PSDSeminarbuchungen ");
                 qry.AppendLine("(BuchungID, Mandant, SeminarterminID, BelID, BelPosID, VorPosID, Adresse, ");
                 qry.AppendLine("Konto, KontoMatchcode, Ansprechpartnernummer, AnsprechpartnerVorname, ");
@@ -98,7 +99,11 @@ namespace PSDev.OfficeLine.Academy.DataAccess
             else
             {
                 // Aktualisierung
-                // TODO: umsetzen
+                qry.AppendLine("UPDATE PSDSeminarbuchungen SET ");
+                qry.AppendLine("SeminarterminID=@seminarterminid, BelID=@belid, BelPosID=@belposid, VorPosID=@vorposid, ");
+                qry.AppendLine("Adresse=@adresse, Konto=@konto, KontoMatchcode=@kontomatchcode, Ansprechpartnernummer=@ansprechpartnernummer, AnsprechpartnerVorname=@ansprechpartnervorname, ");
+                qry.AppendLine("AnsprechpartnerNachname=@ansprechpartnernachname, AnsprechpartnerEmail=@ansprechpartneremail, EmailbestaetigungGesendet=@emailbestaetigunggesendet ");
+                qry.AppendLine("WHERE Mandant=@mandant AND BuchungID=@buchungID");
             }
 
             var command = mandant.MainDevice.GenericConnection.CreateSqlStringCommand(qry.ToString());
@@ -126,6 +131,7 @@ namespace PSDev.OfficeLine.Academy.DataAccess
             }
             else
             {
+                TraceLog.LogException(result.State.ExceptionOccurred);
                 throw new RecordUpdateException("Seminarbuchung", buchung.BuchungID.ToString());
             }
         }
@@ -153,7 +159,20 @@ namespace PSDev.OfficeLine.Academy.DataAccess
         /// <param name="belPosID"></param>
         public static void DeleteSeminarbuchungen(Mandant mandant, int belID, int belPosID)
         {
-            throw new NotImplementedException("DeleteSeminarbuchungen");
+            try
+            {
+                var qry = "DELETE FROM PSDSeminarbuchungen WHERE Mandant=@mandant AND BelID=@belid";
+                var command = mandant.MainDevice.GenericConnection.CreateSqlStringCommand(qry);
+                command.AppendInParameter("mandant", typeof(short), mandant.Id);
+                command.AppendInParameter("belid", typeof(int), belID);
+                command.AppendInParameter("belposid", typeof(int), belPosID);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                TraceLog.LogException(ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -163,9 +182,31 @@ namespace PSDev.OfficeLine.Academy.DataAccess
         /// <param name="belID"></param>
         /// <param name="belPosID"></param>
         /// <returns></returns>
-        public static object GetSeminarbuchungen(Mandant mandant, int belID, int belPosID)
+        public static Seminarbuchungen GetSeminarbuchungen(Mandant mandant, int belID, int belPosID)
         {
-            throw new NotImplementedException("GetSeminarbuchungen");
+            try
+            {
+                var list = new Seminarbuchungen();
+                var qry = "SELECT BuchungID FROM PSDSeminarbuchungen WHERE Mandant=@mandant AND BelID=@belid AND BelPosID=@belposid";
+                var command = mandant.MainDevice.GenericConnection.CreateSqlStringCommand(qry);
+                command.AppendInParameter("mandant", typeof(short), mandant.Id);
+                command.AppendInParameter("belid", typeof(int), belID);
+                command.AppendInParameter("belposid", typeof(int), belPosID);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(SeminarData.GetSeminarbuchung(mandant, reader.GetInt32("BuchungID")));
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                TraceLog.LogException(ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -174,9 +215,30 @@ namespace PSDev.OfficeLine.Academy.DataAccess
         /// <param name="mandant"></param>
         /// <param name="vorPosID"></param>
         /// <returns></returns>
-        public static object GetSeminarbuchungen(Mandant mandant, int vorPosID)
+        public static Seminarbuchungen GetSeminarbuchungen(Mandant mandant, int vorPosID)
         {
-            throw new NotImplementedException("GetSeminarbuchungen");
+            try
+            {
+                var list = new Seminarbuchungen();
+                var qry = "SELECT BuchungID FROM PSDSeminarbuchungen WHERE Mandant=@mandant AND VorPosID=@vorposid";
+                var command = mandant.MainDevice.GenericConnection.CreateSqlStringCommand(qry);
+                command.AppendInParameter("mandant", typeof(short), mandant.Id);
+                command.AppendInParameter("vorposid", typeof(int), vorPosID);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(SeminarData.GetSeminarbuchung(mandant, reader.GetInt32("BuchungID")));
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                TraceLog.LogException(ex);
+                throw;
+            }
         }
 
         public static string GetSeminarterminByBuchungID(Mandant mandant, int buchungID)
