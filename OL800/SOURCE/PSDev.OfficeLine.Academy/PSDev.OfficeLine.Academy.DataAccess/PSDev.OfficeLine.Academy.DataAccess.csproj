@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Kunde.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -91,9 +92,11 @@
     <Compile Include="Exceptions\RecordNotFoundException.cs" />
     <Compile Include="Exceptions\RecordUpdateException.cs" />
     <Compile Include="Exceptions\RecordValidationException.cs" />
+    <Compile Include="Seminar.cs" />
     <Compile Include="Seminarbuchung.cs" />
     <Compile Include="Seminarbuchungen.cs" />
     <Compile Include="SeminarData.cs" />
+    <Compile Include="Seminartermin.cs" />
     <Compile Include="TraceLog.cs" />
   </ItemGroup>
   <ItemGroup>

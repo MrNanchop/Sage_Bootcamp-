@@ -138,5 +138,14 @@ namespace PSDev.OfficeLine.Academy.Tests
             SeminarData.DeleteSeminarbuchung(_mandant, saveBuchung.BuchungID);
             loadedBuchung = SeminarData.GetSeminarbuchung(_mandant, saveBuchung.BuchungID);
         }
+
+        [TestMethod]
+        public void SeminarData_GetAnsprechpartner_ByNummer()
+        {
+            var result = SeminarData.GetAnsprechpartner(_mandant, 6);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Ansprechpartner.Contains("Arber"));
+        }
+
     }
 }
