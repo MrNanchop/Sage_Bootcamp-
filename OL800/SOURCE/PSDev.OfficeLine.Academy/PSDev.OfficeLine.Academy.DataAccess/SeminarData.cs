@@ -78,9 +78,56 @@ namespace PSDev.OfficeLine.Academy.DataAccess
         /// <returns></returns>
         /// <exception cref="Exception">wird bei allgemeinen Fehler geworfen.</exception>
         /// <exception cref="RecordUpdateException">wird bei Fehlern im DB-Update geworfen.</exception>
-        public static object UpdateOrInsertSeminarbuchung(Mandant mandant, object buchung)
+        public static Seminarbuchung UpdateOrInsertSeminarbuchung(Mandant mandant, Seminarbuchung buchung)
         {
-            throw new NotImplementedException("UpdateOrInsertSeminarbuchung");
+            var qry = new StringBuilder();
+
+            if (buchung.BuchungID == 0)
+            {
+                // Neuanlage
+                buchung.BuchungID = mandant.MainDevice.GetTan("PSDSeminarbuchungen", mandant.Id);
+                qry.AppendLine("INSERT INTO PSDSeminarbuchungen ");
+                qry.AppendLine("(BuchungID, Mandant, SeminarterminID, BelID, BelPosID, VorPosID, Adresse, ");
+                qry.AppendLine("Konto, KontoMatchcode, Ansprechpartnernummer, AnsprechpartnerVorname, ");
+                qry.AppendLine("AnsprechpartnerNachname, AnsprechpartnerEmail, EmailBestaetigungGesendet)");
+                qry.AppendLine("VALUES");
+                qry.AppendLine("(@buchungid, @mandant, @seminarterminid, @belid, @belposid, @vorposid, @adresse, ");
+                qry.AppendLine("@konto, @kontomatchcode, @ansprechpartnernummer, @ansprechpartnervorname, ");
+                qry.AppendLine("@ansprechpartnernachname, @ansprechpartneremail, @emailbestaetigunggesendet)");
+            }
+            else
+            {
+                // Aktualisierung
+                // TODO: umsetzen
+            }
+
+            var command = mandant.MainDevice.GenericConnection.CreateSqlStringCommand(qry.ToString());
+            command.AppendInParameter("buchungid", typeof(int), buchung.BuchungID);
+            command.AppendInParameter("mandant", typeof(short), buchung.Mandant);
+            command.AppendInParameter("seminarterminid", typeof(string), buchung.SeminarterminID);
+            command.AppendInParameter("belid", typeof(int), buchung.BelID);
+            command.AppendInParameter("belposid", typeof(int), buchung.BelPosID);
+            command.AppendInParameter("vorposid", typeof(int), buchung.VorPosID);
+            command.AppendInParameter("adresse", typeof(int), buchung.Adresse);
+            command.AppendInParameter("konto", typeof(string), buchung.Konto);
+            command.AppendInParameter("kontomatchcode", typeof(string), buchung.KontoMatchcode);
+            command.AppendInParameter("ansprechpartnernummer", typeof(int), buchung.Ansprechpartnernummer);
+            command.AppendInParameter("ansprechpartnervorname", typeof(string), buchung.AnsprechpartnerVorname);
+            command.AppendInParameter("ansprechpartnernachname", typeof(string), buchung.AnsprechpartnerNachname);
+            command.AppendInParameter("ansprechpartneremail", typeof(string), buchung.AnsprechpartnerEmail);
+            command.AppendInParameter("emailbestaetigunggesendet", typeof(short), ConversionHelper.ToDBBoolean(buchung.EmailBestaetigungGesendet));
+
+            var result = command.TryExecuteNonQuery();
+
+            if (result.State.IsSucceeded)
+            {
+                buchung = SeminarData.GetSeminarbuchung(mandant, buchung.BuchungID);
+                return buchung;
+            }
+            else
+            {
+                throw new RecordUpdateException("Seminarbuchung", buchung.BuchungID.ToString());
+            }
         }
 
         /// <summary>
@@ -90,7 +137,12 @@ namespace PSDev.OfficeLine.Academy.DataAccess
         /// <param name="buchungID"></param>
         public static void DeleteSeminarbuchung(Mandant mandant, int buchungID)
         {
-            throw new NotImplementedException("DeleteSeminarbuchung");
+            var qry = $"DELETE FROM PSDSeminarbuchungen WHERE Mandant={mandant.Id} AND BuchungID={buchungID}";
+            var result = mandant.MainDevice.GenericConnection.TryExecuteNonQuery(qry);
+            if (!result.State.IsSucceeded)
+            {
+                throw new RecordUpdateException("Seminarbuchung", buchungID.ToString());
+            }
         }
 
         /// <summary>
