@@ -58,5 +58,13 @@ namespace PSDev.OfficeLine.Academy.Tests
 
         }
 
+        [ExpectedException(typeof(RecordNotFoundException))]
+        [TestMethod]
+        public void Test_SeminarData_GetSeminarbuchung_And_ExpectException()
+        {
+            var buchung = SeminarData.GetSeminarbuchung(_mandant, -1);
+            Assert.IsNull(buchung);
+        }
+
     }
 }

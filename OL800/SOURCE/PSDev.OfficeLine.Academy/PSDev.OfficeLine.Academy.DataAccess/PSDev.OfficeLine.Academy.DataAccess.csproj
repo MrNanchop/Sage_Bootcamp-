@@ -91,6 +91,7 @@
     <Compile Include="Exceptions\RecordNotFoundException.cs" />
     <Compile Include="Exceptions\RecordUpdateException.cs" />
     <Compile Include="Exceptions\RecordValidationException.cs" />
+    <Compile Include="Seminarbuchung.cs" />
     <Compile Include="SeminarData.cs" />
     <Compile Include="TraceLog.cs" />
   </ItemGroup>

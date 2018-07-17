@@ -1,0 +1,12 @@
+Zusammenfassung Tag 1
+=====================
+- Einführung Sage 100
+	- Benutzerdefinierte Felder
+	- Speichererweiterung
+	- Externe Prozesse
+- Testprojekte
+- Die glorreichen 7
+- Mandanten-Objekt
+- Datenzugriff => Commands, Reader
+- IDisposable
+- Logging via TraceLog

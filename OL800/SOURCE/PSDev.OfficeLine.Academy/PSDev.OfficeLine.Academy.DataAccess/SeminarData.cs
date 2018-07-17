@@ -24,7 +24,7 @@ namespace PSDev.OfficeLine.Academy.DataAccess
         /// <returns></returns>
         /// <exception cref="Exception">wird bei allgemeinen Fehler geworfen.</exception>
         /// <exception cref="RecordNotFoundException">wird geworfen, wenn Datensatz nicht in Datenbank vorhanden.</exception>
-        public static object GetSeminarbuchung(Mandant mandant, int buchungID)
+        public static Seminarbuchung GetSeminarbuchung(Mandant mandant, int buchungID)
         {
             var qry = "SELECT * FROM PSDSeminarbuchungen WHERE Mandant=@mandant AND BuchungID=@buchungid";
             var command = mandant.MainDevice.GenericConnection.CreateSqlStringCommand(qry);
@@ -35,14 +35,37 @@ namespace PSDev.OfficeLine.Academy.DataAccess
             {
                 if (reader.Read())
                 {
-                    // TODO: hier am Dienstag weiter
-                    throw new NotImplementedException("GetSeminarbuchung");
+                    // Variante 1 instanziierung und Zuweisung
+                    //var seminarbuchung = new Seminarbuchung();
+                    //seminarbuchung.Adresse = reader.GetInt32("Adresse");
+                    //seminarbuchung.AnsprechpartnerEmail = reader.GetString("AnsprechpartnerEmail");
+                    //seminarbuchung.AnsprechpartnerNachname = reader.GetString("AnsprechpartnerNachname");
+
+                    // Variante 2 über Class-Initializer
+                    return new Seminarbuchung()
+                    {
+                        Adresse = reader.GetInt32("Adresse"),
+                        AnsprechpartnerEmail = reader.GetString("AnsprechpartnerEmail"),
+                        AnsprechpartnerNachname = reader.GetString("AnsprechpartnerNachname"),
+                        Ansprechpartnernummer = reader.GetInt32("Ansprechpartnernummer"),
+                        AnsprechpartnerVorname = reader.GetString("AnsprechpartnerVorname"),
+                        BelID = reader.GetInt32("BelID"),
+                        BelPosID = reader.GetInt32("BelPosID"),
+                        BuchungID = reader.GetInt32("BuchungID"),
+                        EmailBestaetigungGesendet = reader.GetDBBoolean("EmailBestaetigungGesendet"),
+                        Konto = reader.GetString("Konto"),
+                        KontoMatchcode = reader.GetString("KontoMatchcode"),
+                        Mandant = reader.GetInt16("Mandant"),
+                        SeminarterminID = reader.GetString("SeminarterminID"),
+                        Timestamp = reader.GetBytes("Timestamp"),
+                        VorPosID = reader.GetInt32("VorPosID")
+                    };
                 }
                 else
                 {
                     throw new RecordNotFoundException("Seminarbuchung", buchungID.ToString());
                 }
-               
+
             }
 
         }
