@@ -171,8 +171,109 @@ namespace PSDev.OfficeLine.Academy.BusinessLogic
         /// <returns></returns>
         public Seminarbuchung CreateOrUpdateBuchungsbeleg(Seminarbuchung seminarbuchung)
         {
-            // TODO: Implementierung
-            throw new NotImplementedException("CreateOrUpdatebuchungsbeleg");
+            try
+            {
+                if (seminarbuchung == null) { throw new ArgumentNullException("Seminarbuchung"); }
+                var seminartermin = SeminarData.GetSeminartermin(Mandant, seminarbuchung.SeminarterminID);
+
+                Mandant.MainDevice.GenericConnection.BeginTransaction();
+
+                using (var beleg = new Sagede.OfficeLine.Wawi.BelegEngine.Beleg(Mandant, Erfassungsart.Verkauf))
+                {
+                    if (seminarbuchung.BuchungID == 0)
+                    {
+                        #region Neuanlage eines Beleges
+
+                        if (!beleg.Initialize("VVA", DateTime.Today,
+                            (short)Mandant.PeriodenManager.Perioden.Date2Periode(DateTime.Now).Jahr))
+                        {
+                            throw new BuchungValidationException("Fehler bei Beleganlage. " + beleg.Errors.GetDescriptionSummary());
+                        }
+
+                        beleg.Bearbeiter = Mandant.Benutzer.Name;
+                        if (seminartermin.Startdatum.HasValue)
+                        {
+                            beleg.Liefertermin = seminartermin.Startdatum.GetValueOrDefault();
+                        }
+                        else
+                        {
+                            beleg.Liefertermin = beleg.Belegdatum;
+                        }
+
+                        beleg.Matchcode = $"Seminarbuchung für Termin {seminartermin.SeminarterminID}";
+
+                        if (!beleg.SetKonto(seminarbuchung.Konto, false))
+                        {
+                            throw new BuchungValidationException("Fehler bei Beleganlage [SetKonto]. " + beleg.Errors.GetDescriptionSummary());
+                        }
+
+                        var position = new BelegPosition(beleg);
+                        if (!position.Initialize(Positionstyp.Artikel))
+                        {
+                            throw new BuchungValidationException("Fehler bei Beleganlage [InitializePosition]. " + beleg.Errors.GetDescriptionSummary());
+                        }
+
+                        if (!position.SetArtikel(seminartermin.Artikelnummer, 0))
+                        {
+                            throw new BuchungValidationException("Fehler bei Artikelanlage [SetArtikel]. " + beleg.Errors.GetDescriptionSummary());
+                        }
+
+                        position.Menge = 1;
+                        position.RefreshBasismenge(true, 2);
+
+                        //bei manuellen Preisen => IstEinzelpreisManuell
+                        //position.Einzelpreis = 1000;
+                        //position.IstEinzelpreisManuell = true;
+
+                        position.Calculate();
+                        beleg.Positionen.Add(position);
+                        beleg.Renumber();
+                        beleg.ReadStandardTexte(true);
+
+                        if (!beleg.Validate(true))
+                        {
+                            throw new BuchungValidationException("Fehler bei Beleganlage [Validate]. " + beleg.Errors.GetDescriptionSummary());
+                        }
+
+                        // TODO: Transaktionsklammer
+                        if (!beleg.Save(false))
+                        {
+                            throw new BuchungValidationException("Fehler bei Beleganlage [Save]. " + beleg.Errors.GetDescriptionSummary());
+                        }
+
+                        seminarbuchung.BelID = beleg.Handle;
+                        seminarbuchung.BelPosID = position.Handle;
+                        seminarbuchung.VorPosID = position.VorgangspositionsHandle;
+                        seminarbuchung.KontoMatchcode = beleg.A0Matchcode;
+                        seminarbuchung.Adresse = beleg.VKA0AdressNummer;
+                        seminarbuchung = this.UpdateBuchung(seminarbuchung);
+
+                        #endregion
+                    }
+                    else
+                    {
+                        throw new NotImplementedException("Aktualiserung Buchungsbeleg");
+
+                    }
+                }
+                if (!Mandant.MainDevice.GenericConnection.PendingRollback)
+                {
+                    Mandant.MainDevice.GenericConnection.CommitTransaction();
+                }
+                else
+                {
+                    Mandant.MainDevice.GenericConnection.RollbackTransaction();
+                }
+                return seminarbuchung;
+            }
+            catch (Exception ex)
+            {
+                Mandant.MainDevice.GenericConnection.RollbackTransaction();
+                TraceLog.LogException(ex);
+                throw;
+            }
+
+
         }
 
         /// <summary>

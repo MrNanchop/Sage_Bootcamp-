@@ -147,5 +147,28 @@ namespace PSDev.OfficeLine.Academy.Tests
             Assert.IsTrue(result.Ansprechpartner.Contains("Arber"));
         }
 
+        [TestMethod]
+        public void SeminarbuchungManager_Create_Buchungsbeleg()
+        {
+            var buchung = new Seminarbuchung()
+            {
+                AnsprechpartnerEmail = "thomas.fritz@sage.com",
+                AnsprechpartnerNachname = "Fritz",
+                AnsprechpartnerVorname = "Thomas",
+                Konto = "D100000",
+                SeminarterminID = "S100001"
+            };
+
+            var manager = new SeminarbuchungManager(_mandant);
+
+            buchung = manager.CreateOrUpdateBuchungsbeleg(buchung);
+            Assert.IsTrue(buchung.BuchungID != 0);
+            Assert.IsTrue(buchung.BelID != 0);
+            Assert.IsTrue(buchung.VorPosID != 0);
+
+
+
+        }
+
     }
 }

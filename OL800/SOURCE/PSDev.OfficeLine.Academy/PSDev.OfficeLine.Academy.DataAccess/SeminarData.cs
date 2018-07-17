@@ -632,7 +632,7 @@ namespace PSDev.OfficeLine.Academy.DataAccess
         /// <param name="adresse"></param>
         /// <returns></returns>
         public static AnsprechpartnerSet GetAnsprechpartnerList(Mandant mandant, int adresse)
-        {  
+        {
             return mandant.MainDevice.Entities.Ansprechpartner.GetList(adresse, mandant.Id, true);
         }
 
@@ -666,7 +666,10 @@ namespace PSDev.OfficeLine.Academy.DataAccess
             item.Autotelefon = ansprechpartner.Autotelefon;
             item.Briefanrede = ansprechpartner.Briefanrede;
             item.EMail = ansprechpartner.EMail;
-            item.Geburtsdatum = ansprechpartner.Geburtsdatum;
+            if (ansprechpartner.Geburtsdatum.HasValue)
+            {
+                item.Geburtsdatum =  ansprechpartner.Geburtsdatum.GetValueOrDefault();
+            }
             item.Gruppe = ansprechpartner.Gruppe;
             item.Memo = ansprechpartner.Memo;
             item.Mobilfunk = ansprechpartner.Mobilfunk;
@@ -679,8 +682,13 @@ namespace PSDev.OfficeLine.Academy.DataAccess
             item.Transferadresse = ansprechpartner.Transferadresse;
             item.Vorname = ansprechpartner.Vorname;
             item.ZuHaendenText = ansprechpartner.ZuHaendenText;
-            ansprechpartner.UserDefinedFields.ToList().ForEach(u => item.UserDefinedFields[u.Name].Value = u.Value);
-            item.Save();
+            //ansprechpartner.UserDefinedFields.ToList().ForEach(u => item.UserDefinedFields[u.Name].Value = u.Value);
+            var result = item.TrySave();
+            if (!result.IsSucceeded)
+            {
+                TraceLog.LogException(result.ExceptionOccurred);
+                throw result.ExceptionOccurred;
+            }
             return item;
         }
 
